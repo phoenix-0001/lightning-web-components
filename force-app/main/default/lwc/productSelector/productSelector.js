@@ -58,7 +58,7 @@ export default class ProductSelector extends LightningElement {
         // Convert availableActions to array (safety)
         const actions = Array.isArray(this.availableActions) ? this.availableActions : [];
 
-        // Preferred path: move forward in the flow
+        // Preferred path: move forward in the flow updated
         if (actions.includes('NEXT')) {
             this.dispatchEvent(new FlowNavigationNextEvent());
             return;
