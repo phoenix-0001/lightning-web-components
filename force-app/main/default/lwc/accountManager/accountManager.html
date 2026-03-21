@@ -1,0 +1,25 @@
+<template>
+    <lightning-card title="Top 10 Accounts" icon-name="standard:account">
+        <div class="slds-m-around_medium">
+            <template if:true={accounts}>
+                <lightning-button 
+                    label="Delete Selected" 
+                    variant="destructive" 
+                    onclick={handleDelete} 
+                    disabled={isDeleteDisabled}
+                    class="slds-m-bottom_small">
+                </lightning-button>
+                
+                <lightning-datatable
+                    key-field="id"
+                    data={accounts}
+                    columns={columns}
+                    onrowselection={handleRowSelection}>
+                </lightning-datatable>
+            </template>
+            <template if:true={error}>
+                <p class="slds-text-color_error">Error loading accounts.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- Configuration details for the Lightning Web Component bundle -->
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<!-- isExposed must be true to make this component available for use within the OmniScript builder -->
+	<isExposed>true</isExposed>
+	<!-- Standard platform API version for component definition -->
+	<apiVersion>66.0</apiVersion>
+    
+	<!-- 
+        CRITICAL: The runtimeNamespace tag is necessary for OmniScript base mixin compatibility.
+        Since OmniStudio operates under the 'omnistudio' namespace, this allows the base mixin code
+        to execute natively within our LWC without triggering cross-namespace restriction errors.
+    -->
+	<runtimeNamespace>omnistudio</runtimeNamespace>
+    
+	<!-- Specifies which pages the component can be manually placed into from Lightning App Builder -->
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+	</targets>
+</LightningComponentBundle>

@@ -1,0 +1,20 @@
+<template>
+    <div class="slds-box slds-theme_default">
+        <p><b>Welcome, {customerInfo} </b></p>
+        <lightning-combobox
+            name="plan"
+            label="Select Mobile Plan"
+            value={selectedPlan}
+            placeholder="Choose a plan"
+            options={mobileOptions}
+            onchange={handlePlanChange}>
+        </lightning-combobox>
+    </div>
+
+
+    <lightning-button
+        variant="brand"
+        label="Submit Selection"
+        onclick={sendDataToOmni}>
+    </lightning-button>
+</template>

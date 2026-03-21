@@ -1,0 +1,59 @@
+<template>
+    <!-- 
+        The top-level container formatted using Salesforce Lightning Design System (SLDS) 
+        utility classes to give a standard boxed appearance with padding.
+    -->
+    <div class="slds-box slds-theme_default">
+        
+        <!-- Only display the greeting if customerName has been passed in from the OmniScript -->
+        <template if:true={customerName}>
+            <p class="slds-text-heading_small slds-m-bottom_medium">
+                <b>Preparing quote for: {customerName}</b>
+            </p>
+        </template>
+        
+        <!-- Base Product selection section -->
+        <div class="slds-m-bottom_medium">
+            <!-- 
+                Combobox for selecting a single base software package.
+                It binds to productOptions returning from JS and triggers handleProductChange on selection.
+            -->
+            <lightning-combobox
+                name="baseProduct"
+                label="Select Base Software Package"
+                value={selectedProduct}
+                placeholder="Choose a product package"
+                options={productOptions}
+                onchange={handleProductChange}
+                required>
+            </lightning-combobox>
+        </div>
+
+        <!-- Add-on Modules selection section -->
+        <div class="slds-m-bottom_large">
+            <!-- 
+                Checkbox group allowing multiple selections for add-ons. 
+                It binds to moduleOptions and updates selectedModules array via handleModuleChange.
+            -->
+            <lightning-checkbox-group
+                name="modules"
+                label="Select Additional Modules"
+                options={moduleOptions}
+                value={selectedModules}
+                onchange={handleModuleChange}>
+            </lightning-checkbox-group>
+        </div>
+
+        <!-- Submission section -->
+        <!-- 
+            The submit button captures the state and signals OmniScript.
+            It remains disabled until a base product is selected, enforced by the isSubmitDisabled getter.
+        -->
+        <lightning-button
+            variant="brand"
+            label="Confirm Selection & Proceed"
+            onclick={sendDataToOmni}
+            disabled={isSubmitDisabled}>
+        </lightning-button>
+    </div>
+</template>
