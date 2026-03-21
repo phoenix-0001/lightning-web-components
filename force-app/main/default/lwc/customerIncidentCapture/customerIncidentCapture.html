@@ -1,0 +1,104 @@
+<template>
+    <!--
+        customerIncidentCapture – Real-Time Incident Logging for OmniScript
+        ────────────────────────────────────────────────────────────────────
+        Every field change fires handleFieldChange, which immediately pushes
+        the updated incident data into the OmniScript data JSON via
+        omniUpdateDataJson. Downstream OmniScript elements (Set Values,
+        Integration Procedures, DataRaptors) can react in REAL-TIME.
+    -->
+    <div class="slds-box slds-theme_default slds-p-around_medium">
+
+        <!-- Agent greeting (only shown if agentName is passed from OmniScript) -->
+        <template if:true={agentName}>
+            <p class="slds-text-heading_small slds-m-bottom_medium">
+                <lightning-icon icon-name="standard:case" size="small" class="slds-m-right_x-small"></lightning-icon>
+                <b>Agent: {agentName} — Logging New Incident</b>
+            </p>
+        </template>
+
+        <!-- Section Header -->
+        <h2 class="slds-text-heading_medium slds-m-bottom_small">
+            Log Customer Incident
+        </h2>
+        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">
+            Incident data is sent to OmniScript in real-time as you fill in each field.
+        </p>
+
+        <!-- Subject -->
+        <div class="slds-m-bottom_small">
+            <lightning-input
+                type="text"
+                label="Subject"
+                value={incident.subject}
+                data-field="subject"
+                placeholder="e.g. Unable to access billing portal"
+                onchange={handleFieldChange}
+                required>
+            </lightning-input>
+        </div>
+
+        <!-- Priority & Category – Side by side using SLDS grid -->
+        <div class="slds-grid slds-gutters slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-combobox
+                    name="priority"
+                    label="Priority"
+                    value={incident.priority}
+                    placeholder="Select priority"
+                    options={priorityOptions}
+                    onchange={handleFieldChange}
+                    data-field="priority"
+                    required>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-combobox
+                    name="category"
+                    label="Category"
+                    value={incident.category}
+                    placeholder="Select category"
+                    options={categoryOptions}
+                    onchange={handleFieldChange}
+                    data-field="category"
+                    required>
+                </lightning-combobox>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="slds-m-bottom_small">
+            <lightning-textarea
+                label="Description"
+                value={incident.description}
+                data-field="description"
+                placeholder="Describe the issue the customer is experiencing..."
+                max-length="2000"
+                onchange={handleFieldChange}
+                required>
+            </lightning-textarea>
+        </div>
+
+        <!-- Preferred Contact Method -->
+        <div class="slds-m-bottom_medium">
+            <lightning-radio-group
+                name="contactMethod"
+                label="Preferred Contact Method"
+                options={contactMethodOptions}
+                value={incident.contactMethod}
+                type="button"
+                onchange={handleContactMethodChange}
+                required>
+            </lightning-radio-group>
+        </div>
+
+        <!-- Log Incident & Navigate Button -->
+        <lightning-button
+            variant="brand"
+            label="Log Incident & Proceed"
+            onclick={logAndProceed}
+            disabled={isSubmitDisabled}>
+        </lightning-button>
+
+    </div>
+</template>

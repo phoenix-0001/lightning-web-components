@@ -1,0 +1,32 @@
+<template>
+    <div class="account-card-container">
+        <header class="card-header">
+            <div class="avatar">{accountInitials}</div>
+            <div class="header-content">
+                <h1 class="account-name">{name}</h1>
+                <p class="account-type">{type} • {industry}</p>
+            </div>
+        </header>
+
+        <div class="card-body">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Annual Revenue</span>
+                    <span class="value">{annualRevenue}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Phone</span>
+                    <span class="value">{phone}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Website</span>
+                    <a href={website} target="_blank" class="value link">{website}</a>
+                </div>
+                <div class="info-item">
+                    <span class="label">Employees</span>
+                    <span class="value">{numberOfEmployees}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
