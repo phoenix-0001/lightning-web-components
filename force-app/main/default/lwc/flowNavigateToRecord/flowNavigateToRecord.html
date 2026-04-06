@@ -1,0 +1,10 @@
+<template>
+    <!-- Display a branded spinner while the page redirect is in progress -->
+    <template if:true={showSpinner}>
+        <lightning-spinner
+            alternative-text="Please wait..." variant="brand" class="slds-is-fixed">
+        </lightning-spinner>
+    </template>
+    <!-- Show the target record Id to the user during redirect -->
+    Navigating to the created record {targetRecordId}
+</template>
