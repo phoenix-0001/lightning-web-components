@@ -1,0 +1,219 @@
+/* ============================
+   Case Merge — Custom Styles
+   ============================ */
+
+/* Step container */
+.step-container {
+    min-height: 300px;
+}
+
+/* Search input styling */
+.search-input {
+    max-width: 600px;
+}
+
+/* Results table */
+.results-table {
+    border: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Selected cases pill section */
+.selected-cases-section {
+    background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+}
+
+.pill-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+/* Master case selection grid */
+.master-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+}
+
+/* Case cards */
+.case-card {
+    border: 2px solid var(--slds-g-color-border-base-1, #e5e5e5);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.case-card:hover {
+    border-color: var(--slds-g-color-brand-base-50, #0176d3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.case-card-selected {
+    border: 2px solid var(--slds-g-color-brand-base-50, #0176d3);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--slds-g-color-brand-base-95, #eef4ff);
+    box-shadow: 0 2px 12px rgba(1, 118, 211, 0.15);
+}
+
+.case-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.case-card-radio {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+.case-card-title {
+    display: flex;
+    align-items: center;
+}
+
+/* Related record count badges */
+.related-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.count-badge {
+    font-size: 0.7rem;
+}
+
+/* Review sections */
+.review-section {
+    border: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
+    background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+    border-bottom: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+}
+
+.review-body {
+    padding: 1rem;
+}
+
+.master-review {
+    border-left: 4px solid var(--slds-g-color-brand-base-50, #0176d3);
+}
+
+.duplicates-review {
+    border-left: 4px solid var(--slds-g-color-neutral-base-60, #939393);
+}
+
+.totals-review {
+    border-left: 4px solid var(--slds-g-color-success-base-40, #2e844a);
+}
+
+.duplicate-row {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.duplicate-row:last-child {
+    border-bottom: none;
+}
+
+/* Totals grid */
+.totals-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.total-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.total-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--slds-g-color-brand-base-50, #0176d3);
+}
+
+.total-label {
+    font-size: 0.75rem;
+    color: var(--slds-g-color-neutral-base-50, #706e6b);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Merge warning */
+.merge-warning {
+    display: flex;
+    align-items: center;
+    background: var(--slds-g-color-warning-base-95, #fef0cd);
+    border: 1px solid var(--slds-g-color-warning-base-50, #fe9339);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: var(--slds-g-color-neutral-base-10, #181818);
+}
+
+/* Merge result */
+.merge-result-container {
+    padding: 3rem 0;
+}
+
+.merge-result-card {
+    text-align: center;
+    padding: 2rem;
+    max-width: 500px;
+}
+
+.result-icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--slds-g-color-success-base-95, #cdefc4);
+}
+
+.result-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+/* Navigation buttons */
+.navigation-buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+}
+
+/* Spinner overlay */
+.merge-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.7);
+}

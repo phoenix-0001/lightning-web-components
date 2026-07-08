@@ -1,0 +1,325 @@
+<template>
+    <!-- Main Card -->
+    <lightning-card title="Case Merge" icon-name="standard:case_merge">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+
+            <!-- Progress Indicator -->
+            <div class="slds-m-bottom_large">
+                <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                    <lightning-progress-step label="Search & Select" value="1"></lightning-progress-step>
+                    <lightning-progress-step label="Choose Master" value="2"></lightning-progress-step>
+                    <lightning-progress-step label="Review & Merge" value="3"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </div>
+
+            <!-- ============ STEP 1: Search & Select Cases ============ -->
+            <template if:true={isStep1}>
+                <div class="step-container">
+                    <h2 class="slds-text-heading_medium slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:search" size="small" class="slds-m-right_x-small"></lightning-icon>
+                        Search &amp; Select Cases to Merge
+                    </h2>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                        Search by Case Number, Subject, or Contact Name. Select all the cases you want to merge.
+                    </p>
+
+                    <!-- Search Input -->
+                    <div class="slds-m-bottom_medium">
+                        <lightning-input
+                            type="search"
+                            label="Search Cases"
+                            placeholder="e.g. 00001042, Billing Issue, John Smith..."
+                            value={searchTerm}
+                            onchange={handleSearchChange}
+                            variant="label-hidden"
+                            class="search-input">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Search Results -->
+                    <template if:true={isSearching}>
+                        <div class="slds-align_absolute-center slds-m-vertical_large">
+                            <lightning-spinner alternative-text="Searching..." size="small"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:true={hasSearchResults}>
+                        <div class="results-table slds-m-bottom_medium">
+                            <lightning-datatable
+                                key-field="caseId"
+                                data={searchResults}
+                                columns={searchColumns}
+                                selected-rows={selectedCaseIds}
+                                onrowselection={handleRowSelection}
+                                show-row-number-column
+                                max-row-selection="999">
+                            </lightning-datatable>
+                        </div>
+                    </template>
+
+                    <template if:true={noResults}>
+                        <div class="slds-align_absolute-center slds-m-vertical_large slds-text-color_weak">
+                            <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            No cases found. Try a different search term.
+                        </div>
+                    </template>
+
+                    <!-- Selected Cases Pills -->
+                    <template if:true={hasSelectedCases}>
+                        <div class="selected-cases-section slds-m-top_medium">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                Selected Cases ({selectedCaseCount})
+                            </h3>
+                            <div class="pill-container">
+                                <template for:each={selectedCases} for:item="sc">
+                                    <lightning-pill
+                                        key={sc.caseId}
+                                        label={sc.pillLabel}
+                                        onremove={handleRemoveCase}
+                                        data-id={sc.caseId}
+                                        class="slds-m-around_xx-small">
+                                    </lightning-pill>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ============ STEP 2: Choose Master Case ============ -->
+            <template if:true={isStep2}>
+                <div class="step-container">
+                    <h2 class="slds-text-heading_medium slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:record" size="small" class="slds-m-right_x-small"></lightning-icon>
+                        Choose Master Case
+                    </h2>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                        Select the case that will be kept as the primary record. All related records from the other cases will be moved to this case.
+                    </p>
+
+                    <template if:true={isLoadingDetails}>
+                        <div class="slds-align_absolute-center slds-m-vertical_large">
+                            <lightning-spinner alternative-text="Loading details..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:false={isLoadingDetails}>
+                        <div class="master-selection-grid">
+                            <template for:each={caseDetails} for:item="detail">
+                                <div key={detail.caseId}
+                                     class={detail.cardClass}
+                                     onclick={handleMasterSelection}
+                                     data-id={detail.caseId}>
+                                    <div class="case-card-header">
+                                        <div class="case-card-radio">
+                                            <lightning-input
+                                                type="radio"
+                                                name="masterCase"
+                                                value={detail.caseId}
+                                                checked={detail.isMaster}
+                                                label=""
+                                                variant="label-hidden">
+                                            </lightning-input>
+                                        </div>
+                                        <div class="case-card-title">
+                                            <span class="slds-text-heading_small">{detail.caseNumber}</span>
+                                            <template if:true={detail.isMaster}>
+                                                <lightning-badge label="Master" class="slds-m-left_x-small master-badge"></lightning-badge>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="case-card-body">
+                                        <p class="slds-text-body_regular slds-m-bottom_x-small">
+                                            <strong>Subject:</strong> {detail.subject}
+                                        </p>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            <strong>Status:</strong> {detail.status} &bull;
+                                            <strong>Priority:</strong> {detail.priority}
+                                        </p>
+                                        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                                            <strong>Contact:</strong> {detail.contactName} &bull;
+                                            <strong>Account:</strong> {detail.accountName}
+                                        </p>
+                                        <div class="related-counts">
+                                            <lightning-badge label={detail.commentLabel} class="count-badge"></lightning-badge>
+                                            <lightning-badge label={detail.emailLabel} class="count-badge"></lightning-badge>
+                                            <lightning-badge label={detail.taskLabel} class="count-badge"></lightning-badge>
+                                            <lightning-badge label={detail.attachmentLabel} class="count-badge"></lightning-badge>
+                                            <lightning-badge label={detail.childCaseLabel} class="count-badge"></lightning-badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ============ STEP 3: Review & Merge ============ -->
+            <template if:true={isStep3}>
+                <div class="step-container">
+                    <h2 class="slds-text-heading_medium slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:check" size="small" class="slds-m-right_x-small"></lightning-icon>
+                        Review &amp; Confirm Merge
+                    </h2>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                        Review the merge summary below. Once confirmed, this action cannot be undone.
+                    </p>
+
+                    <!-- Master Case Summary -->
+                    <div class="review-section master-review slds-m-bottom_medium">
+                        <div class="review-header">
+                            <lightning-icon icon-name="standard:case" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span class="slds-text-title_caps">Master Case (Will Be Kept)</span>
+                        </div>
+                        <div class="review-body">
+                            <p class="slds-text-heading_small">{masterCaseDetail.caseNumber} — {masterCaseDetail.subject}</p>
+                            <p class="slds-text-body_small slds-text-color_weak">
+                                Status: {masterCaseDetail.status} &bull;
+                                Priority: {masterCaseDetail.priority} &bull;
+                                Contact: {masterCaseDetail.contactName}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate Cases Summary -->
+                    <div class="review-section duplicates-review slds-m-bottom_medium">
+                        <div class="review-header">
+                            <lightning-icon icon-name="utility:merge" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span class="slds-text-title_caps">Cases to Merge ({duplicateCaseCount})</span>
+                        </div>
+                        <div class="review-body">
+                            <template for:each={duplicateCaseDetails} for:item="dup">
+                                <div key={dup.caseId} class="duplicate-row">
+                                    <span class="slds-text-body_regular">
+                                        <strong>{dup.caseNumber}</strong> — {dup.subject}
+                                    </span>
+                                    <span class="slds-text-body_small slds-text-color_weak slds-m-left_small">
+                                        ({dup.totalRelated} related records)
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="review-section totals-review slds-m-bottom_medium">
+                        <div class="review-header">
+                            <lightning-icon icon-name="utility:summary" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span class="slds-text-title_caps">Merge Summary</span>
+                        </div>
+                        <div class="review-body">
+                            <div class="totals-grid">
+                                <div class="total-item">
+                                    <span class="total-number">{totalComments}</span>
+                                    <span class="total-label">Comments</span>
+                                </div>
+                                <div class="total-item">
+                                    <span class="total-number">{totalEmails}</span>
+                                    <span class="total-label">Emails</span>
+                                </div>
+                                <div class="total-item">
+                                    <span class="total-number">{totalTasks}</span>
+                                    <span class="total-label">Tasks</span>
+                                </div>
+                                <div class="total-item">
+                                    <span class="total-number">{totalAttachments}</span>
+                                    <span class="total-label">Files</span>
+                                </div>
+                                <div class="total-item">
+                                    <span class="total-number">{totalChildCases}</span>
+                                    <span class="total-label">Child Cases</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="slds-notify slds-notify_alert merge-warning slds-m-bottom_medium" role="alert">
+                        <lightning-icon icon-name="utility:warning" variant="warning" size="small" class="slds-m-right_x-small"></lightning-icon>
+                        <span>The {duplicateCaseCount} duplicate case(s) will be closed with Subject prefixed "Merged -" and a link to the master case added to their Description. All related records will be reparented to the master case. This action cannot be undone.</span>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ============ Merge Result ============ -->
+            <template if:true={mergeComplete}>
+                <div class="merge-result-container slds-align_absolute-center">
+                    <div class="merge-result-card">
+                        <div class="result-icon-container">
+                            <lightning-icon icon-name="action:approval" size="large"></lightning-icon>
+                        </div>
+                        <h2 class="slds-text-heading_medium slds-m-top_medium">Merge Complete!</h2>
+                        <p class="slds-text-body_regular slds-text-color_weak slds-m-top_small slds-m-bottom_medium">
+                            {mergeResultMessage}
+                        </p>
+                        <div class="result-actions">
+                            <lightning-button
+                                label="View Master Case"
+                                variant="brand"
+                                onclick={handleNavigateToMaster}
+                                class="slds-m-right_small">
+                            </lightning-button>
+                            <lightning-button
+                                label="Merge More Cases"
+                                variant="neutral"
+                                onclick={handleReset}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ============ Navigation Buttons ============ -->
+            <template if:false={mergeComplete}>
+                <div class="navigation-buttons slds-m-top_large">
+                    <template if:false={isStep1}>
+                        <lightning-button
+                            label="Back"
+                            variant="neutral"
+                            onclick={handleBack}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                    </template>
+                    <template if:true={isStep1}>
+                        <lightning-button
+                            label="Cancel"
+                            variant="neutral"
+                            onclick={handleCancel}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                        <lightning-button
+                            label="Next: Choose Master"
+                            variant="brand"
+                            onclick={handleNext}
+                            disabled={isNextDisabled}>
+                        </lightning-button>
+                    </template>
+                    <template if:true={isStep2}>
+                        <lightning-button
+                            label="Next: Review"
+                            variant="brand"
+                            onclick={handleNext}
+                            disabled={isMasterNotSelected}>
+                        </lightning-button>
+                    </template>
+                    <template if:true={isStep3}>
+                        <lightning-button
+                            label="Confirm Merge"
+                            variant="brand"
+                            onclick={handleMerge}
+                            disabled={isMerging}
+                            class="confirm-merge-btn">
+                        </lightning-button>
+                    </template>
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+
+    <!-- Full-page spinner during merge -->
+    <template if:true={isMerging}>
+        <lightning-spinner alternative-text="Merging cases..." size="large" class="merge-spinner"></lightning-spinner>
+    </template>
+</template>
