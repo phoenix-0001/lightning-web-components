@@ -7,7 +7,7 @@ public with sharing class CloseAccountCasesAction {
      * @description Input parameters for closing account cases
      */
     public class Request {
-        @InvocableVariable(required=true label='Account ID' description='ID of the Account whose open cases should be closed')
+        @InvocableVariable(required=true label='Account ID' description='IDs of the Account whose open cases should be closed')
         public Id accountId;
     }
 
